@@ -1,7 +1,6 @@
 #include<Wire.h>
  /* Inclut la lib Servo pour manipuler le servomoteur */
 #include <Servo.h>
-
 /* Créer un objet Servo pour contrôler le servomoteur */
 Servo monServomoteur, servo2;
     const int MPU_addr=0x68;  // I2C address of the MPU-6050
@@ -13,6 +12,9 @@ Servo monServomoteur, servo2;
       Wire.write(0);     // set to zero (wakes up the MPU-6050)
       Wire.endTransmission(true);
       Serial.begin(9600);
+      //pinMode(9,OUTPUT);
+      //digitalWrite(9,HIGH);
+      Serial1.begin(9640);// démarre la voie série à la vitesse 9600 baud
 
         // Attache le servomoteur à la broche D9
         monServomoteur.attach(9);
@@ -30,14 +32,14 @@ Servo monServomoteur, servo2;
     //  GyX=Wire.read()<<8|Wire.read();  // 0x43 (GYRO_XOUT_H) & 0x44 (GYRO_XOUT_L)
     //  GyY=Wire.read()<<8|Wire.read();  // 0x45 (GYRO_YOUT_H) & 0x46 (GYRO_YOUT_L)
      // GyZ=Wire.read()<<8|Wire.read();  // 0x47 (GYRO_ZOUT_H) & 0x48 (GYRO_ZOUT_L)
-      Serial.print("AcX = "); Serial.print(AcX);
+      /*Serial.print("AcX = "); Serial.print(AcX);
       Serial.print(" | AcY = "); Serial.print(AcY);
       Serial.print(" | AcZ = "); Serial.print(AcZ);
       Serial.print(" | Tmp = "); Serial.print(Tmp/340.00+36.53);  //equation for temperature in degrees C from datasheet
       Serial.print(" | GyX = "); Serial.print(GyX);
       Serial.print(" | GyY = "); Serial.print(GyY);
-      Serial.print(" | GyZ = "); Serial.println(GyZ);
-
+      Serial.print(" | GyZ = "); Serial.println(GyZ);*/
+      sendData(AcX,AcY,AcZ);
       int value1 = constrain(AcX,-180,180);
       value1= map (value1,-180,180,0,180);
       monServomoteur.write(value1);
@@ -60,4 +62,18 @@ Servo monServomoteur, servo2;
         servo2.write(position);
         delay(10);
       }*/
+    }
+    void sendData(int16_t X, int16_t Y, int16_t Z){
+      String data;
+      if(Serial.available()){
+        data = (String)X;
+        data += '\t'+(char)Y;
+        data += '\t'+(char)Z;
+        data += '\n';
+        Serial1.println(data);
+        Serial.println(data);
+      }
+      while(Serial1.available()){
+        Serial.print((char)Serial1.read());
+      }
     }
