@@ -67,8 +67,8 @@ Servo monServomoteur, servo2;
       String data;
       if(Serial.available()){
         data = (String)X;
-        data += '-'+(char)Y;
-        data += '-'+(char)Z;
+        data += '-'+(String)Y;
+        data += '-'+(String)Z;
         data += '\n';
         Serial1.println(data);
         Serial.println(data);
