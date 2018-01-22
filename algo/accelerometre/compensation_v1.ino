@@ -27,7 +27,7 @@ void setup(){
     servo2.attach(10);
 }
 void loop(){
-  int16_t vector
+  int16_t vector[3];
   Wire.beginTransmission(MPU_addr);
   Wire.write(0x3B);  // starting with register 0x3B (ACCEL_XOUT_H)
   Wire.endTransmission(false);
@@ -97,19 +97,24 @@ void sendData(int16_t X, int16_t Y, int16_t Z){
 void compareAcc(int16_t tab[3]){
   //Acquisition des données de mouvement par intervalle de 2
   //Vecteur soustraction 
-  int16_t vector[3];
-  for (int i = 0; i<2; i++){
-    vector[i] = vectorMove[i] - tab[i] //soustraction 1er vecteur avec le second
+  int16_t vectorS[3];
+  int normeS, norme1, i;
+  for (i = 0; i<2; i++){
+    vectorS[i] = vectorMove[i] - tab[i]; //soustraction 1er vecteur avec le second
   //Norme du vecteur soustraction accélération
-  normeS = sqrt(pow(vector[0])+pow(vector[1])+pow(vector[2]));
+  normeS = sqrt(pow(vectorS[0],2)+pow(vectorS[1],2)+pow(vectorS[2],2));
   //Norme du premier vecteur
-  norme1 = sqrt(pow(vectorMove[0])+pow(vectorMove[1])+pow(vectorMove[2]));
+  norme1 = sqrt(pow(vectorMove[0],2)+pow(vectorMove[1],2)+pow(vectorMove[2],2));
   //Comparaison entre les 2
+  }
   if((float)normeS/2 > (float)norme1){
     //Tremblements
-    println("tremblements");
+    Serial.println("tremblements");
   }
   else{
-    vectorMove = tab;
-    println("vecmove:"+vectorMove);
+    vectorMove[0] = tab[0];
+    vectorMove[1] = tab[1];
+    vectorMove[2] = tab[2];
+    Serial.println("vecmove:"+vectorMove[0]);
   }
+}
