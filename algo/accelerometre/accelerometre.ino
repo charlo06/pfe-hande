@@ -27,7 +27,7 @@ Servo servoX, servoY, servoZ;
       initY=Wire.read()<<8|Wire.read();  // 0x3D (ACCEL_YOUT_H) & 0x3E (ACCEL_YOUT_L)
       initZ=Wire.read()<<8|Wire.read();
 
-      //servoX.write(90);
+      servoX.write(90);
       servoY.write(90);
       servoZ.write(90);
     }
@@ -59,11 +59,11 @@ Servo servoX, servoY, servoZ;
       Serial.print(" | GyY = "); Serial.print(GyY);
       Serial.print(" | GyZ = "); Serial.println(GyZ);
       int value1 = constrain(GyY,-180,180);
-      value1= map (value1,-180,180,60,120);
+      value1= map (value1,-200,200,60,120);
       servoY.write(value1);
       int value2 = constrain(GyZ,-180,180);
-      value2=map(value2,-180,180,60,120);
-      servoZ.write(value2);
+      value2=map(value2,200,-200,60,120);
+      servoX.write(value2);
 
       delay(50);
       
