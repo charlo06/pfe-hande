@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:ignore="AppCompatResource">
+    <item
+        android:id="@+id/profil"
+        app:showAsAction="always"
+        android:title="@string/profil"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/rapport"
+        app:showAsAction="always"
+        android:title="@string/rapport"/>
+    <item
+        android:id="@+id/tps"
+        app:showAsAction="always"
+        android:title="@string/tps"/>
+
+</menu>
