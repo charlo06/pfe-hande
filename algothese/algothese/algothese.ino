@@ -103,10 +103,16 @@ void setup() {
   }
 
   //SERVO TESTING
+<<<<<<< HEAD
   servoX.attach(8);
   servoY.attach(9);
   servoPince.attach(13);
   pinMode(4,INPUT);
+=======
+  servoX.attach(9);
+  servoY.attach(8);
+
+>>>>>>> a6bb552d7eb9e292a46b4f2ad61add4959f88466
   i2cData[0] =7; //Set the sample rate to 1000Hz - 8kHz/(7+1) =1000Hz
   i2cData[1] = 0x00; //Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro Filtering, 8kHz sampling;
   //the fsync() function is intended to force a physical write of data from the buffer cache, and to assure that after a system crash or other failure that all data up to the time of the fsync() call is recorded on the disk
@@ -309,8 +315,12 @@ void loop() {
 
    int freqTotAvg = (freqAverageX + freqAverageY )/2;
 
+<<<<<<< HEAD
    String envoie;
    if(freqTotAvg >= 12){
+=======
+   if(freqTotAvg >=12){
+>>>>>>> a6bb552d7eb9e292a46b4f2ad61add4959f88466
     servoXvalue = map(kalAngleX, -180,180, 50,130);
     servoX.write(servoXvalue );
     servoYvalue = map(kalAngleY, 180,-180,50,130);
