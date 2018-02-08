@@ -92,8 +92,8 @@ void setup() {
   }
 
   //SERVO TESTING
-  servoX.attach(8);
-  servoY.attach(9);
+  servoX.attach(9);
+  servoY.attach(8);
 
   i2cData[0] =7; //Set the sample rate to 1000Hz - 8kHz/(7+1) =1000Hz
   i2cData[1] = 0x00; //Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro Filtering, 8kHz sampling;
@@ -298,9 +298,9 @@ void loop() {
    int freqTotAvg = (freqAverageX + freqAverageY )/2;
 
    if(freqTotAvg >=12){
-    servoXvalue = map(kalAngleX, -180,180,50,130);
+    servoXvalue = map(kalAngleX, -180,180, 50,130);
     servoX.write(servoXvalue );
-    servoYvalue = map(kalAngleY, -180,180,50,130);
+    servoYvalue = map(kalAngleY, 180,-180,50,130);
     servoY.write(servoYvalue );
     delay(10);
    }
