@@ -1,12 +1,17 @@
 #include <Wire.h>
 #include <Kalman.h>
 #include <Servo.h>
+#include <SoftwareSerial.h>
+
+#define ATTENTE 500
 
 #define RESTRICT_PITCH
 Kalman kalmanX;
 Kalman kalmanY;
 Servo servoX;
 Servo servoY;
+Servo servoPince;
+int compteur;
 
 //#define RESTRIC_PITCH // Comment out to restrist roll to +/- 90 degrees.
 
@@ -76,6 +81,9 @@ int servoXvalue;
 int servoYvalue;
 int cali = 0;
 
+int pinBouton;
+int pos;
+
 uint32_t timer; //unsigned 32-bit integer
 uint8_t i2cData[14]; //Buffer for I2C data. Total array of 14 Registers. Unsigned 8-bit integer
 
@@ -84,6 +92,9 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
   Wire.setClock(400000UL); //Set I2C frequency to 400kHz
+  Serial.println("Arduino is ready");
+  Serial1.begin(9600);  
+
 
   for(int thisReading =0; thisReading< numReadings; thisReading++){
     readings[thisReading]=0;
@@ -94,7 +105,8 @@ void setup() {
   //SERVO TESTING
   servoX.attach(8);
   servoY.attach(9);
-
+  servoPince.attach(13);
+  pinMode(4,INPUT);
   i2cData[0] =7; //Set the sample rate to 1000Hz - 8kHz/(7+1) =1000Hz
   i2cData[1] = 0x00; //Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro Filtering, 8kHz sampling;
   //the fsync() function is intended to force a physical write of data from the buffer cache, and to assure that after a system crash or other failure that all data up to the time of the fsync() call is recorded on the disk
@@ -297,11 +309,37 @@ void loop() {
 
    int freqTotAvg = (freqAverageX + freqAverageY )/2;
 
-   if(freqTotAvg >=12){
-    servoXvalue = map(kalAngleX, -180,180,50,130);
+   String envoie;
+   if(freqTotAvg >= 12){
+    servoXvalue = map(kalAngleX, -180,180, 50,130);
     servoX.write(servoXvalue );
-    servoYvalue = map(kalAngleY, -180,180,50,130);
+    servoYvalue = map(kalAngleY, 180,-180,50,130);
     servoY.write(servoYvalue );
-    delay(10);
-   }
+    if(compteur == 30){
+    envoie = (String)servoYvalue+"/"+(String)servoXvalue+"/"+"1/";
+    Serial1.print(envoie);
+    Serial1.print("#");
+    compteur = 0;
+    }
+}
+  else{
+    if(compteur == 30){
+    envoie = (String)servoYvalue+"/"+(String)servoXvalue+"/"+"0/";
+    Serial1.print(envoie);
+    Serial1.print("#");
+    compteur = 0;
+    }
+  }
+  compteur++;
+
+  boolean etatBouton=digitalRead(pinBouton);
+   pos = 0;
+   
+   if(etatBouton == 1){
+      //Ferme la pince
+      monServomoteur.write(65);
+  }
+ if(etatBouton==0){
+  monServomoteur.write(0);
+  }
 }
